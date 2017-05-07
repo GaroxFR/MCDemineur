@@ -1,0 +1,10 @@
+author: GartoxFR
+version: 0.1
+description: le bon vieux démineur sur Minecraft
+main: fr.gartox.mcdemineur.Main
+commands:
+  mcdemineur:
+    usage: /mcd
+    description: Ouvre le démineur
+    aliases:
+      -mcd
