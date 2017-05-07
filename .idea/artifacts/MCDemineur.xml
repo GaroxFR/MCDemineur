@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MCDemineur">
+    <output-path>$PROJECT_DIR$/../../Serveur UHC Swap/plugins</output-path>
+    <root id="archive" name="MCDemineur.jar">
+      <element id="module-output" name="MCDemineur" />
+    </root>
+  </artifact>
+</component>
