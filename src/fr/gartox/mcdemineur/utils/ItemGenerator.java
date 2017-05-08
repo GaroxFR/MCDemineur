@@ -1,5 +1,6 @@
 package fr.gartox.mcdemineur.utils;
 
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -13,6 +14,7 @@ public class ItemGenerator {
     private String name;
     private short durability;
     private int amount;
+    private DyeColor color;
 
     public ItemGenerator(Material material, int amount) {
         this.material = material;
@@ -27,6 +29,8 @@ public class ItemGenerator {
             it.setDurability(getDurability());
         if(name != null)
             meta.setDisplayName(getName());
+        if(color != null)
+            it.setDurability(color.getWoolData());
         it.setItemMeta(meta);
         return it;
     }
@@ -62,7 +66,17 @@ public class ItemGenerator {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public ItemGenerator setAmount(int amount) {
         this.amount = amount;
+        return this;
+    }
+
+    public DyeColor getColor() {
+        return color;
+    }
+
+    public ItemGenerator setColor(DyeColor color) {
+        this.color = color;
+        return this;
     }
 }

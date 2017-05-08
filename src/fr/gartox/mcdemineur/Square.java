@@ -1,20 +1,34 @@
 package fr.gartox.mcdemineur;
 
+import fr.gartox.mcdemineur.utils.ItemGenerator;
 import fr.gartox.mcdemineur.utils.SquareType;
+import org.bukkit.DyeColor;
+import org.bukkit.Material;
+import org.bukkit.inventory.Inventory;
 
 /**
- * Created by Ewan on 07/05/2017.
+ * Created by GartoxFR on 07/05/2017.
  */
 public class Square {
 
     private SquareType type;
     private boolean discover;
     private int position;
+    private Inventory inventory;
 
-    public Square(SquareType type, int position) {
+    public Square(SquareType type, int position, Inventory inventory) {
         this.setType(type);
         this.setDiscover(false);
         this.setPosition(position);
+        this.setInventory(inventory);
+    }
+
+    public void draw(Inventory inventory) {
+        if(isDiscover()){
+            inventory.setItem(getPosition(), getType().getItem());
+        } else {
+            inventory.setItem(getPosition(), new ItemGenerator(Material.STAINED_GLASS_PANE, 1).setColor(DyeColor.GRAY).setName("Undiscovered").generate());
+        }
     }
 
     public SquareType getType() {
@@ -40,4 +54,14 @@ public class Square {
     public void setPosition(int position) {
         this.position = position;
     }
+
+    public Inventory getInventory() {
+        return inventory;
+    }
+
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
+
 }
