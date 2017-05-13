@@ -1,5 +1,6 @@
 package fr.gartox.mcdemineur;
 
+import fr.gartox.mcdemineur.commands.DSpectateExecutor;
 import fr.gartox.mcdemineur.commands.MCDemineurExecutor;
 import fr.gartox.mcdemineur.events.Discover;
 import fr.gartox.mcdemineur.utils.Utils;
@@ -13,6 +14,7 @@ public class Main extends JavaPlugin{
     public void onEnable() {
         Utils.setInstance(this);
         getCommand("MCDemineur").setExecutor(new MCDemineurExecutor());
+        getCommand("dspectate").setExecutor(new DSpectateExecutor());
         getServer().getPluginManager().registerEvents(new Discover(), this);
     }
 }

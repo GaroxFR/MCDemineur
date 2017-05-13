@@ -11,6 +11,7 @@ import org.bukkit.inventory.Inventory;
  */
 public class Square {
 
+    private boolean flag;
     private SquareType type;
     private boolean discover;
     private int position;
@@ -19,6 +20,7 @@ public class Square {
     public Square(SquareType type, int position, Inventory inventory) {
         this.setType(type);
         this.setDiscover(false);
+        this.setFlag(false);
         this.setPosition(position);
         this.setInventory(inventory);
     }
@@ -27,7 +29,11 @@ public class Square {
         if(isDiscover()){
             inventory.setItem(getPosition(), getType().getItem());
         } else {
-            inventory.setItem(getPosition(), new ItemGenerator(Material.STAINED_GLASS_PANE, 1).setColor(DyeColor.GRAY).setName("Undiscovered").generate());
+            if(isFlag()){
+                inventory.setItem(getPosition(), new ItemGenerator(Material.BANNER, 1).setName("Flag").generate());
+            }else{
+                inventory.setItem(getPosition(), new ItemGenerator(Material.STAINED_GLASS_PANE, 1).setColor(DyeColor.GRAY).setName("Undiscovered").generate());
+            }
         }
     }
 
@@ -63,5 +69,11 @@ public class Square {
         this.inventory = inventory;
     }
 
+    public boolean isFlag() {
+        return flag;
+    }
 
+    public void setFlag(boolean flag) {
+        this.flag = flag;
+    }
 }

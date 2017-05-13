@@ -9,3 +9,6 @@ commands:
     description: Ouvre le démineur
     aliases:
       -mcd
+  dspectate:
+    usage: /dspectate <joueur>
+    description: Regardez la partie de quelqu'un

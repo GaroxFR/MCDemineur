@@ -1,6 +1,5 @@
 package fr.gartox.mcdemineur.commands;
 
-import fr.gartox.mcdemineur.Grid;
 import fr.gartox.mcdemineur.utils.Utils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -1,16 +1,16 @@
 package fr.gartox.mcdemineur;
 
-import fr.gartox.mcdemineur.utils.ItemGenerator;
 import fr.gartox.mcdemineur.utils.SquareType;
 import fr.gartox.mcdemineur.utils.Utils;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.DyeColor;
-import org.bukkit.Material;
+import org.bukkit.*;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -23,6 +23,7 @@ public class Grid {
     private Player player;
     private Inventory inventory;
     private boolean lose = false;
+    private List<Inventory> spectators = new ArrayList<Inventory>();
 
     public Grid(int y, Player player) {
         this.setSquares(new Square[9][y]);
@@ -133,6 +134,9 @@ public class Grid {
         for(int x = 0 ; x < 9 ; x++){
             for(int y = 0; y < height ; y++){
                 squares[x][y].draw(getInventory());
+                for(Inventory inventory : spectators){
+                    squares[x][y].draw(inventory);
+                }
             }
         }
     }
@@ -144,6 +148,7 @@ public class Grid {
     }
 
     public void discover(int x, int y){
+        if (squares[x][y].isFlag()) return;
         if(squares[x][y].getType() == SquareType.BOMB){
             if(!lose)
                 lose();
@@ -251,6 +256,41 @@ public class Grid {
         }
 
         draw();
+        if (verifyWin()) win();
+    }
+
+    private void win() {
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < height; y++) {
+                squares[x][y].setDiscover(true);
+            }
+        }
+        getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
+
+        for (int i = 5; i >= 0; i--) {
+            Firework f = ((Firework) getPlayer().getWorld().spawnEntity(getPlayer().getLocation(), EntityType.FIREWORK));
+            FireworkMeta fm = f.getFireworkMeta();
+            fm.addEffect(FireworkEffect.builder().flicker(false).trail(true).with(FireworkEffect.Type.BALL_LARGE).withColor(Color.AQUA).withColor(Color.WHITE).build());
+            fm.setPower(0);
+            f.setFireworkMeta(fm);
+        }
+
+        getPlayer().sendMessage(ChatColor.GOLD + "[MCDémineur]" + ChatColor.YELLOW + "Vous avez gagné");
+        Utils.removeGrid(getPlayer());
+    }
+
+    private boolean verifyWin() {
+        if (lose) return false;
+        boolean cond = true;
+        for (int x = 0; x < 9; x++) {
+            for (int y = 0; y < height; y++) {
+                if (squares[x][y].getType() != SquareType.BOMB && !(squares[x][y].isDiscover())) {
+                    cond = false;
+                }
+
+            }
+        }
+        return cond;
     }
 
     private void lose() {
@@ -258,12 +298,18 @@ public class Grid {
         for(int x = 0 ; x < 9 ; x++){
             for(int y = 0 ; y < height  ; y++){
                 squares[x][y].setDiscover(true);
-                Bukkit.getScheduler().runTaskLater(Utils.getInstance(), () -> {
-                    getPlayer().sendMessage(ChatColor.GOLD + "[MCDémineur]" + ChatColor.YELLOW + "Vous avez perdu");
-                    getPlayer().closeInventory();
-                }, 60);
             }
         }
+        draw();
+        getPlayer().playSound(getPlayer().getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 1, 1);
+        getPlayer().sendMessage(ChatColor.GOLD + "[MCDémineur]" + ChatColor.YELLOW + "Vous avez perdu");
+        Utils.removeGrid(getPlayer());
+    }
+
+    public void addSpectator(Inventory inventory, Player owner){
+        spectators.add(inventory);
+        owner.openInventory(inventory);
+        draw();
     }
 
     public Square[][] getSquares() {
